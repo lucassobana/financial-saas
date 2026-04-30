@@ -17,7 +17,10 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "FinFlow",
   description: "Controle Financeiro Inteligente",
-  manifest: "/manifest.json",
+  icons: {
+    icon: '/icon-192x192.png',
+    apple: '/icon-192x192.png',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
