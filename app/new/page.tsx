@@ -4,7 +4,6 @@ import { TransactionForm } from '@/components/transactions/TransactionsForm'
 export default async function NewTransactionPage() {
   const supabase = await createClient()
   
-  // Busca as categorias diretamente na página
   const { data: categories } = await supabase
     .from('categories')
     .select('*')
@@ -18,8 +17,6 @@ export default async function NewTransactionPage() {
           <p className="text-slate-500 mt-2">Preencha os dados abaixo</p>
         </div>
 
-        {/* Chamamos o formulário e passamos as categorias! */}
-        {/* Como não é mais uma gaveta, não precisamos do onSuccess para fechar */}
         <TransactionForm categories={categories || []} />
       </div>
     </div>

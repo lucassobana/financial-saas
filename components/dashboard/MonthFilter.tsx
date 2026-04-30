@@ -5,13 +5,12 @@ import { Filter } from "lucide-react";
 
 export function MonthFilter() {
   const router = useRouter();
-  const pathname = usePathname(); // Descobre se estamos em / ou /history ou /charts
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentMonth = searchParams.get("month") || "all";
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
-    // Mantém o utilizador na mesma página, apenas altera o parâmetro ?month=
     if (value === "all") {
       router.push(pathname);
     } else {

@@ -27,7 +27,6 @@ export default async function CategoriesPage() {
           Gerenciar Categorias
         </h1>
 
-        {/* Formulário de Criação */}
         <Card className="border-slate-200">
           <CardContent className="p-6">
             <form action={createCategory} className="space-y-4">
@@ -67,7 +66,6 @@ export default async function CategoriesPage() {
           </CardContent>
         </Card>
 
-        {/* Lista de Categorias Atuais */}
         <div className="space-y-3">
           <h2 className="font-bold text-slate-600 uppercase text-xs tracking-widest">
             Suas Categorias

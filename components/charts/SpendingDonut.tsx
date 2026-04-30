@@ -1,6 +1,5 @@
 "use client";
 
-// Adicionada a importação do Legend
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 
 interface Transaction {
@@ -47,7 +46,6 @@ export function SpendingDonut({
 
   return (
     <div className="relative w-full">
-      {/* Aumentamos um pouco a altura para acomodar a legenda perfeitamente */}
       <ResponsiveContainer width="100%" height={340}>
         <PieChart>
           <Pie

@@ -12,10 +12,8 @@ export default async function ChartsPage({
   const supabase = await createClient();
   const isAllMonths = !month || month === "all";
 
-  // Busca transações
   let query = supabase.from("transactions").select("amount, date, type");
 
-  // Se não for "Todos", filtra pelo mês selecionado
   if (!isAllMonths && month) {
     const [year, monthStr] = month.split("-");
     const lastDay = new Date(Number(year), Number(monthStr), 0).getDate();
@@ -24,7 +22,6 @@ export default async function ChartsPage({
 
   const { data: transactions } = await query;
 
-  // Lógica para o Gráfico de Barras (Gastos Mensais)
   const meses = [
     "Jan",
     "Fev",

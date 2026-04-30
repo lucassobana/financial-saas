@@ -12,13 +12,11 @@ export default async function HistoryPage({
 
   const isAllMonths = !month || month === "all";
 
-  // 1. Construção da Query
   let query = supabase
     .from("transactions")
     .select(`*, categories(name, color)`)
     .order("date", { ascending: false });
 
-  // 2. Aplica filtro apenas se não for "Todos"
   if (!isAllMonths && month) {
     const [year, monthStr] = month.split("-");
     const lastDay = new Date(Number(year), Number(monthStr), 0).getDate();

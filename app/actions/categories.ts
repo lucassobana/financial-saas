@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
-export async function createCategory(formData: FormData) {
+export async function createCategory(formData: FormData): Promise<void> {
   const supabase = await createClient();
 
   const {
@@ -34,6 +34,4 @@ export async function createCategory(formData: FormData) {
   revalidatePath("/categories");
   revalidatePath("/");
   revalidatePath("/new");
-
-  return { success: true };
 }
