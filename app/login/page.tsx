@@ -7,10 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Banknote, Mail, Lock, LogIn, Eye, EyeOff } from "lucide-react";
+import { Banknote, Mail, Lock, LogIn, Eye, EyeOff, Wallet } from "lucide-react";
 // import { ArrowRightCircle } from "lucide-react"; // Import para quando habilitar o cadastro
-import { toast } from 'sonner'
-
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -52,9 +51,9 @@ export default function LoginPage() {
       // } // Fechamento do else do isSignUp
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error(error.message)
+        toast.error(error.message);
       } else {
-        toast.error("Erro na autenticação")
+        toast.error("Erro na autenticação");
       }
     } finally {
       setLoading(false);
@@ -70,13 +69,15 @@ export default function LoginPage() {
           <Card className="border-gray-100 shadow-[0px_1px_3px_rgba(0,0,0,0.05),0px_1px_2px_rgba(0,0,0,0.03)] rounded-xl bg-white overflow-hidden">
             <CardContent className="p-8 md:p-10">
               <div className="flex flex-col items-center mb-10">
-                <div className="w-12 h-12 bg-[#006a3e] rounded-xl flex items-center justify-center mb-4 shadow-sm">
-                  <Banknote className="text-white w-7 h-7" />
+                <div className="flex items-center justify-center gap-3 mb-8">
+                  <div className="w-14 h-14 bg-[#006a3e] rounded-xl flex items-center justify-center shadow-sm">
+                    <Wallet className="text-white w-8 h-8" />
+                  </div>
+                  <h1 className="text-4xl font-extrabold tracking-tight antialiased">
+                    FinFlow
+                  </h1>
                 </div>
-                <h1 className="text-[30px] font-bold text-[#006a3e] tracking-tight">
-                  FinFlow
-                </h1>
-                <p className="text-gray-500 mt-2 text-center text-[16px]">
+                <p className="text-gray-500 text-center text-[16px]">
                   {/* Comentado o texto dinâmico para Beta */}
                   {/* isSignUp ? "Crie sua conta gratuita." : "Bem-vindo ao futuro da sua gestão financeira." */}
                   Bem-vindo ao futuro da sua gestão financeira.
