@@ -1,16 +1,32 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-
-// Importe o seu novo componente
 import { BottomNav } from "@/components/navigation/BottomNav"
+import { Toaster } from "sonner"
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"] })
 
+export const viewport: Viewport = {
+  themeColor: "#006a3e",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
-  title: "FinFlow - Controle Financeiro",
-  description: "Seu MVP de controle financeiro pessoal.",
-}
+  title: "FinFlow",
+  description: "Controle Financeiro Inteligente",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "FinFlow",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+};
 
 export default function RootLayout({
   children,
@@ -20,11 +36,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
-        {/* O children renderiza o conteúdo específico de cada página (Home, Categorias, etc) */}
         {children}
-        
-        {/* A barra de navegação fica fixa no final para todas as páginas */}
+        <Toaster richColors position="top-center" />
         <BottomNav />
+        <Analytics />
       </body>
     </html>
   )

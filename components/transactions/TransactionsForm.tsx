@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createTransaction } from "@/app/actions/transactions";
+import { toast } from "sonner";
 
 export interface Category {
   id: string;
@@ -43,33 +44,30 @@ export function TransactionForm({
   const formRef = useRef<HTMLFormElement>(null);
   const [type, setType] = useState<"INCOME" | "EXPENSE">("EXPENSE");
 
-  // O SEGREDO ESTÁ AQUI: Inicializamos como string vazia para manter o componente 100% controlado desde o início.
   const [categoryId, setCategoryId] = useState<string>("");
-  // Busca os dados da categoria que tem o mesmo ID que o usuário selecionou
   const selectedCategory = categories.find((c) => String(c.id) === categoryId);
 
   const handleSubmit = async (formData: FormData) => {
-    // A nossa validação manual protege o envio
-    if (!categoryId) {
-      alert("Por favor, selecione uma categoria.");
+    if (type === "EXPENSE" && !categoryId) {
+      toast.info("Por favor, selecione uma categoria.");
       return;
     }
 
     formData.append("type", type);
-    formData.append("category_id", categoryId);
-
+    if (categoryId) {
+      formData.append("category_id", categoryId);
+    }
     const result = await createTransaction(formData);
 
     if (result && !result.error) {
       formRef.current?.reset();
 
-      // Limpa a seleção voltando para a string vazia (mostrando o placeholder novamente)
       setCategoryId("");
 
-      alert("Transação salva com sucesso!");
+      toast.success("Transação salva com sucesso!");
       onSuccess?.();
     } else {
-      alert("Erro ao salvar. Verifique o console.");
+      toast.error("Erro ao salvar. Verifique o console.");
     }
   };
 
@@ -142,17 +140,15 @@ export function TransactionForm({
           <div className="space-y-3">
             <Label className="font-semibold text-sm text-slate-600 flex items-center gap-2">
               <Tag size={18} />
-              Categoria
+              Categoria {type === "INCOME" && <span className="text-xs font-normal text-slate-400">(Opcional)</span>}
             </Label>
 
-            {/* O Select agora tem um 'value' definido desde a montagem, sem conflitos! */}
             <Select
               value={categoryId}
               onValueChange={(val: string | null) => setCategoryId(val || "")}
             >
               <SelectTrigger className="h-10 bg-slate-50 border-slate-200 rounded-xl px-6 focus:ring-emerald-500 text-slate-700">
                 <SelectValue placeholder="Selecione uma categoria">
-                  {/* SE A CATEGORIA EXISTIR, MOSTRA O NOME E A COR. SE NÃO, MOSTRA O PLACEHOLDER */}
                   {selectedCategory ? (
                     <span className="flex items-center gap-2">
                       <span

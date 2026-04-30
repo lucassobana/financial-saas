@@ -6,21 +6,34 @@ import { revalidatePath } from "next/cache";
 export async function createCategory(formData: FormData) {
   const supabase = await createClient();
 
-  // COLE O ID QUE VOCÊ COPIOU AQUI:
-  const user_id = "ef5a1e0e-29cd-4c3f-9515-06a28c8c3f0f";
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
 
-  // Captura os dados do formulário
-  const data = {
-    name: formData.get("name") as string,
-    color: formData.get("color") as string,
-    user_id,
-  };
+  if (authError || !user) {
+    throw new Error("Usuário não autenticado");
+  }
 
-  const { error } = await supabase.from("categories").insert([data]);
-  if (error) throw new Error(error.message);
+  const name = formData.get("name") as string;
+  const color = formData.get("color") as string;
 
-  // Atualiza a página automaticamente para mostrar a nova transação
+  const { error } = await supabase.from("categories").insert([
+    {
+      name,
+      color,
+      user_id: user.id,
+    },
+  ]);
+
+  if (error) {
+    console.error("Erro ao criar categoria:", error);
+    throw new Error(error.message);
+  }
+
   revalidatePath("/categories");
+  revalidatePath("/");
+  revalidatePath("/new");
 
-  revalidatePath("/"); // Para atualizar a lista de categorias na página principal
+  return { success: true };
 }

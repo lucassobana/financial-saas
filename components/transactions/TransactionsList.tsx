@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
 import { deleteTransaction } from "@/app/actions/transactions";
 import { Button } from "@/components/ui/button";
 import { ArrowDownCircle, ArrowUpCircle, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Transaction {
   id: string;
@@ -18,16 +19,27 @@ export function TransactionList({
 }: {
   transactions: Transaction[];
 }) {
-  const handleDelete = async (id: string) => {
-    const confirm = window.confirm(
-      "Tem certeza que deseja deletar esta transação?",
-    );
-    if (!confirm) return;
+  const handleDelete = (id: string) => {
+    toast("Tem certeza que deseja deletar esta transação?", {
+      action: {
+        label: "Deletar",
+        onClick: async () => {
+          const result = await deleteTransaction(id);
 
-    const result = await deleteTransaction(id);
-    if (result?.error) {
-      alert("Erro ao deletar: " + result.error);
-    }
+          if (result?.error) {
+            toast.error("Erro ao deletar: " + result.error);
+          } else {
+            toast.success("Transação deletada com sucesso");
+          }
+        },
+      },
+      cancel: {
+        label: "Cancelar",
+        onClick: () => {
+          toast.dismiss();
+        },
+      },
+    });
   };
 
   if (!transactions || transactions.length === 0) {
@@ -64,16 +76,18 @@ export function TransactionList({
                 <span className="flex items-center gap-1">
                   <span
                     className="w-2 h-2 rounded-full"
-                    style={{ backgroundColor: t.categories?.color || "#ccc" }}
+                    style={{ backgroundColor: t.categories?.color }}
                   ></span>
-                  {t.categories?.name || "Sem Categoria"}
+                  {t.categories?.name}
                 </span>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <span className={`font-bold ${t.type == 'INCOME' ? 'text-emerald-600 bg-emerald-200' : 'text-red-600 bg-red-200'} px-3 py-1 rounded-full`}>
+            <span
+              className={`font-bold ${t.type == "INCOME" ? "text-emerald-600 bg-emerald-200" : "text-red-600 bg-red-200"} px-3 py-1 rounded-full`}
+            >
               {t.type === "INCOME" ? "+" : "-"} R$ {Number(t.amount).toFixed(2)}
             </span>
             <Button

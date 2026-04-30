@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { Grid } from "lucide-react";
+import {
+  Grid,
+  LogOut,
+  User,
+  ShieldCheck,
+  CircleHelp,
+  Bell,
+} from "lucide-react";
+import { signOut } from "@/app/actions/auth";
 
 export default function SettingsPage() {
   const settingsOptions = [
@@ -8,6 +16,30 @@ export default function SettingsPage() {
       description: "Adicione ou edite as suas categorias de gastos",
       href: "/categories",
       icon: Grid,
+    },
+    {
+      name: "Perfil",
+      description: "Edite suas informações pessoais",
+      href: "/profile",
+      icon: User,
+    },
+    {
+      name: "Notificações",
+      description: "Configure seus alertas de gastos",
+      href: "/notification",
+      icon: Bell,
+    },
+    {
+      name: "Segurança",
+      description: "Proteja sua conta e altere sua senha",
+      href: "/security",
+      icon: ShieldCheck,
+    },
+    {
+      name: "Ajuda & Suporte",
+      description: "Dúvidas ou problemas com o Beta?",
+      href: "/help",
+      icon: CircleHelp,
     },
   ];
 
@@ -25,10 +57,12 @@ export default function SettingsPage() {
             <Link
               key={option.name}
               href={option.href}
-              className="block bg-white border border-slate-200 shadow-sm rounded-lg p-4 mb-4 hover:bg-emerald-50 transition-colors"
+              className="block bg-white border border-slate-200 shadow-sm rounded-lg p-4 mb-4 hover:bg-emerald-50 transition-colors group"
             >
               <div className="flex items-center gap-4">
-                <Icon size={24} className="text-emerald-600" />
+                <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-white transition-colors">
+                  <Icon size={20} className="text-emerald-600" />
+                </div>
                 <div>
                   <h2 className="text-sm font-semibold text-slate-900">
                     {option.name}
@@ -39,6 +73,22 @@ export default function SettingsPage() {
             </Link>
           );
         })}
+
+        <form action={signOut} className="mt-8">
+          <button
+            type="submit"
+            className="w-full flex items-center justify-center gap-3 bg-white border border-red-100 text-red-600 p-4 rounded-lg shadow-sm hover:bg-red-50 transition-colors font-semibold text-sm"
+          >
+            <LogOut size={18} />
+            Sair da Conta
+          </button>
+        </form>
+
+        <div className="mt-8 text-center">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            FinFlow Beta v1.0.0
+          </p>
+        </div>
       </main>
     </div>
   );
