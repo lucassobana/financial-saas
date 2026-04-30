@@ -1,6 +1,7 @@
 "use client";
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+// Adicionada a importação do Legend
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 
 interface Transaction {
   amount: number;
@@ -13,7 +14,6 @@ export function SpendingDonut({
 }: {
   transactions: Transaction[];
 }) {
-  // 1. Filtrar apenas saídas e agrupar por categoria
   const expensesByCategory = transactions
     .filter((t) => t.type === "EXPENSE")
     .reduce(
@@ -47,7 +47,8 @@ export function SpendingDonut({
 
   return (
     <div className="relative w-full">
-      <ResponsiveContainer width="100%" height={300}>
+      {/* Aumentamos um pouco a altura para acomodar a legenda perfeitamente */}
+      <ResponsiveContainer width="100%" height={340}>
         <PieChart>
           <Pie
             data={data}
@@ -63,7 +64,7 @@ export function SpendingDonut({
           <Tooltip
             formatter={(value) => {
               if (typeof value === "number") {
-                return value.toFixed(2);
+                return `R$ ${value.toFixed(2)}`;
               }
               return value;
             }}
@@ -73,11 +74,16 @@ export function SpendingDonut({
               boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
             }}
           />
+          <Legend 
+            verticalAlign="bottom" 
+            height={36} 
+            iconType="circle"
+            formatter={(value) => <span className="text-sm text-slate-700">{value}</span>}
+          />
         </PieChart>
       </ResponsiveContainer>
 
-      {/* Texto no centro do Donut */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pb-8">
         <span className="text-xs text-slate-500 font-medium uppercase">
           Total
         </span>
