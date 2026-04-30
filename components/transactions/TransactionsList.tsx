@@ -39,15 +39,13 @@ export function TransactionList({
   }
 
   return (
-    // <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden">
     <div className="space-y-4">
       {transactions.map((t) => (
         <div
           key={t.id}
-          className="flex items-center justify-between p-5 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors"
+          className="flex items-center justify-between border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors"
         >
           <div className="flex items-center gap-4">
-            {/* <div className={`p-2 rounded-2xl ${t.type === 'INCOME' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}> */}
             <div className="flex items-center gap-4">
               {t.type === "INCOME" ? (
                 <ArrowDownCircle className="text-emerald-500" size={24} />
@@ -75,7 +73,7 @@ export function TransactionList({
           </div>
 
           <div className="flex items-center gap-4">
-            <span className={`font-bold ${t.type == 'INCOME' ? 'text-emerald-600' : 'text-red-600'}`}>
+            <span className={`font-bold ${t.type == 'INCOME' ? 'text-emerald-600 bg-emerald-200' : 'text-red-600 bg-red-200'} px-3 py-1 rounded-full`}>
               {t.type === "INCOME" ? "+" : "-"} R$ {Number(t.amount).toFixed(2)}
             </span>
             <Button
