@@ -3,11 +3,7 @@ import { TransactionList } from "@/components/transactions/TransactionsList";
 import { SpendingDonut } from "@/components/charts/SpendingDonut";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Wallet,
-  ArrowDownCircle,
-  ArrowUpCircle,
-} from "lucide-react";
+import { Wallet, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import { MonthFilter } from "@/components/dashboard/MonthFilter";
 import Link from "next/link";
 import { NewTransactionModal } from "@/components/transactions/NewTransactionModal";
@@ -34,17 +30,28 @@ export default async function Home({
   }
 
   const { data: transactions } = await query;
-  const { data: categories } = await supabase.from("categories").select("*").order("name");
+  const { data: categories } = await supabase
+    .from("categories")
+    .select("*")
+    .order("name");
 
-  const incomes = transactions?.filter((t) => t.type === "INCOME").reduce((acc, curr) => acc + curr.amount, 0) || 0;
-  const expenses = transactions?.filter((t) => t.type === "EXPENSE").reduce((acc, curr) => acc + curr.amount, 0) || 0;
+  const incomes =
+    transactions
+      ?.filter((t) => t.type === "INCOME")
+      .reduce((acc, curr) => acc + curr.amount, 0) || 0;
+  const expenses =
+    transactions
+      ?.filter((t) => t.type === "EXPENSE")
+      .reduce((acc, curr) => acc + curr.amount, 0) || 0;
   const balance = incomes - expenses;
 
   return (
     <div className="bg-slate-50 min-h-screen pb-32 font-sans">
       <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-white border-b border-slate-200 shadow-sm">
         <div className="flex items-center gap-2">
-          <Wallet className="text-emerald-600" size={24} />
+          <div className="w-12 h-12 flex justify-center items-center gap-2 bg-[#006a3e] rounded-xl">
+            <Wallet className="text-white w-7 h-7" />
+          </div>
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">
             FinFlow
           </h1>
@@ -75,7 +82,10 @@ export default async function Home({
                     Entradas
                   </p>
                   <p className="text-xl font-bold text-emerald-600 mt-1">
-                    R$ {incomes.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    R${" "}
+                    {incomes.toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                    })}
                   </p>
                 </div>
                 <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
@@ -90,7 +100,10 @@ export default async function Home({
                     Saídas
                   </p>
                   <p className="text-xl font-bold text-red-600 mt-1">
-                    R$ {expenses.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    R${" "}
+                    {expenses.toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                    })}
                   </p>
                 </div>
                 <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600">

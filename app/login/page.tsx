@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Banknote, Mail, Lock, LogIn, Eye, EyeOff, Wallet } from "lucide-react";
+import { Mail, Lock, LogIn, Eye, EyeOff, Wallet } from "lucide-react";
 // import { ArrowRightCircle } from "lucide-react"; // Import para quando habilitar o cadastro
 import { toast } from "sonner";
 
