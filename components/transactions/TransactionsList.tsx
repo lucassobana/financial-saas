@@ -65,7 +65,7 @@ export function TransactionList({
                 <ArrowUpCircle className="text-red-500" size={24} />
               )}
             </div>
-            <div>
+            <div className="w-20">
               <p className="font-bold text-slate-800">{t.description}</p>
               <div className="flex flex-col gap-1 text-xs text-slate-500 mt-1">
                 <span>
