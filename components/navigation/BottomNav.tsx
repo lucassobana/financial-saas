@@ -2,15 +2,14 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, PieChart, Receipt, Settings } from 'lucide-react'
+import { LayoutDashboard, BarChart3, Receipt, Settings } from 'lucide-react'
 
 export function BottomNav() {
-  // Esse hook do Next.js descobre em qual URL o usuário está agora
   const pathname = usePathname()
 
   const navItems = [
     { name: 'Home', href: '/', icon: LayoutDashboard },
-    { name: 'Categorias', href: '/categories', icon: PieChart },
+    { name: 'Gráficos', href: '/charts', icon: BarChart3 },
     { name: 'Histórico', href: '/history', icon: Receipt },
     { name: 'Config', href: '/settings', icon: Settings },
   ]
@@ -19,8 +18,7 @@ export function BottomNav() {
     <nav className="fixed bottom-0 left-0 w-full z-40 flex justify-around items-center px-4 py-3 bg-white/90 backdrop-blur-md border-t border-slate-200">
       {navItems.map((item) => {
         const Icon = item.icon
-        // Verifica se a rota atual é exatamente igual ao href do botão
-        const isActive = pathname === item.href
+        const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`) && item.href !== '/'
 
         return (
           <Link 
