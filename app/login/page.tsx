@@ -43,7 +43,7 @@ export default function LoginPage() {
 
       if (error) throw error;
 
-      toast.success("Login realizado com sucesso!");
+      toast.success("Login realizado com sucesso!", { duration: 1500 });
 
       router.push("/");
       router.refresh();
@@ -51,9 +51,9 @@ export default function LoginPage() {
       // } // Fechamento do else do isSignUp
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error(error.message);
+        toast.error(error.message, { duration: 2000 });
       } else {
-        toast.error("Erro na autenticação");
+        toast.error("Erro na autenticação", { duration: 2000 });
       }
     } finally {
       setLoading(false);

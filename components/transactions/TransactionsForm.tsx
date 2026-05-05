@@ -27,6 +27,7 @@ import {
   updateTransaction,
 } from "@/app/actions/transactions";
 import { toast } from "sonner";
+import { Checkbox } from "../ui/checkbox";
 
 export interface Category {
   id: string;
@@ -66,6 +67,7 @@ export function TransactionForm({
     initialData?.category_id || "",
   );
   const [loading, setLoading] = useState(false);
+  const [keepOpen, setKeepOpen] = useState(false);
 
   const selectedCategory = categories.find((c) => String(c.id) === categoryId);
 
@@ -93,23 +95,49 @@ export function TransactionForm({
         result = await createTransaction(formData);
       }
 
-      if (result && !result.error) {
-        formRef.current?.reset();
-        if (!isEditing) setCategoryId("");
-
+      if (result?.error) {
+        toast.error("Erro ao salvar: " + result.error, {
+          id: toastId,
+          duration: 2000,
+        });
+      } else {
         toast.success(
           isEditing ? "Transação atualizada!" : "Transação salva com sucesso!",
-          { id: toastId },
+          {
+            id: toastId,
+            duration: 1500,
+          },
         );
-        onSuccess?.();
-      } else {
-        toast.error("Erro ao salvar. Verifique o console.", { id: toastId });
+
+        if (keepOpen && !isEditing) {
+          const amountInput = formRef.current?.elements.namedItem(
+            "amount",
+          ) as HTMLInputElement;
+          const descInput = formRef.current?.elements.namedItem(
+            "description",
+          ) as HTMLInputElement;
+
+          if (amountInput) amountInput.value = "";
+          if (descInput) descInput.value = "";
+
+          amountInput?.focus();
+        } else {
+          formRef.current?.reset();
+          if (!isEditing) setCategoryId("");
+          onSuccess?.();
+        }
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error(error.message, { id: toastId });
+        toast.error(error.message, {
+          id: toastId,
+          duration: 2000,
+        });
       } else {
-        toast.error("Erro inesperado ao salvar.", { id: toastId });
+        toast.error("Erro inesperado ao salvar.", {
+          id: toastId,
+          duration: 2000,
+        });
       }
     } finally {
       setLoading(false);
@@ -156,7 +184,9 @@ export function TransactionForm({
             <span className="text-2xl font-bold text-slate-400 mr-2">R$</span>
             <Input
               name="amount"
-              type="number"
+              type="text"
+              inputMode="decimal"
+              pattern="[0-9]*"
               step="0.01"
               placeholder="0,00"
               defaultValue={initialData?.amount}
@@ -253,6 +283,22 @@ export function TransactionForm({
         </div>
 
         <div className="pt-2 space-y-3">
+          {!isEditing && (
+            <div className="flex items-center space-x-2 py-2">
+              <Checkbox
+                id="keepOpen"
+                checked={keepOpen}
+                onCheckedChange={(c) => setKeepOpen(c as boolean)}
+                className="data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
+              />
+              <Label
+                htmlFor="keepOpen"
+                className="text-sm font-medium text-slate-500 cursor-pointer select-none"
+              >
+                Manter aberto para adicionar outra transação
+              </Label>
+            </div>
+          )}
           <Button
             type="submit"
             disabled={loading}

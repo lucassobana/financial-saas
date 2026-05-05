@@ -14,7 +14,7 @@ export function TransactionManager({ transactions, categories }: TransactionMana
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [transactionToEdit, setTransactionToEdit] = useState<Transaction | null>(null);
 
-  const handleEditTransaction = (transaction: Transaction) => {
+  const handleEditTransaction = (transaction: Transaction | null) => {
     setTransactionToEdit(transaction);
     setIsModalOpen(true);
   };
@@ -27,7 +27,7 @@ export function TransactionManager({ transactions, categories }: TransactionMana
       />
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[106.25] p-0 border-none bg-transparent shadow-none">
+        <DialogContent className="sm:max-w-lg md:max-w-xl p-0 border-none bg-transparent shadow-none [&>button]:hidden">
           <TransactionForm 
             categories={categories}
             initialData={transactionToEdit}

@@ -21,7 +21,7 @@ export function CategoryItem({ category }: { category: Category }) {
 
   const handleUpdate = async () => {
     if (!name.trim()) {
-      toast.error("O nome da categoria não pode ser vazio.");
+      toast.error("O nome da categoria não pode ser vazio.", { duration: 2000 });
       return;
     }
 
@@ -32,13 +32,13 @@ export function CategoryItem({ category }: { category: Category }) {
       formData.append("color", color);
 
       await updateCategory(category.id, formData);
-      toast.success("Categoria atualizada com sucesso!");
+      toast.success("Categoria atualizada com sucesso!", { duration: 1500 });
       setIsEditing(false);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error(error.message);
+        toast.error(error.message, { duration: 2000 });
       } else {
-        toast.error("Erro ao atualizar categoria.");
+        toast.error("Erro ao atualizar categoria.", { duration: 2000 });
       }
     } finally {
       setLoading(false);
@@ -52,12 +52,12 @@ export function CategoryItem({ category }: { category: Category }) {
         onClick: async () => {
           try {
             await deleteCategory(id);
-            toast.success("Categoria deletada com sucesso!"); 
+            toast.success("Categoria deletada com sucesso!", { duration: 1500 });
           } catch (error: unknown) {
             if (error instanceof Error) {
-              toast.error("Erro ao deletar: " + error.message);
+              toast.error("Erro ao deletar: " + error.message, { duration: 2000 });
             } else {
-              toast.error("Erro ao deletar categoria.");
+              toast.error("Erro ao deletar categoria.", { duration: 2000 });
             }
           }
         },

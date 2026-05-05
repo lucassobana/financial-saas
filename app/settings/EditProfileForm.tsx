@@ -26,12 +26,12 @@ export function EditProfileForm({ initialName }: EditProfileFormProps) {
     setLoading(true);
     try {
       await updateProfile(formData);
-      toast.success("Perfil atualizado com sucesso!");
+      toast.success("Perfil atualizado com sucesso!", { duration: 1500 });
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error(error.message);
+        toast.error(error.message, { duration: 2000 });
       } else {
-        toast.error("Erro ao atualizar perfil.");
+        toast.error("Erro ao atualizar perfil.", { duration: 2000 });
       }
     } finally {
       setLoading(false);

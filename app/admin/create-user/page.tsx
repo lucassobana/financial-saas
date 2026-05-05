@@ -34,7 +34,7 @@ export default function AdmincreateUserPage() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast.error("As senhas não coincidem.");
+      toast.error("As senhas não coincidem.", { duration: 2000 });
       return;
     }
 
@@ -53,13 +53,13 @@ export default function AdmincreateUserPage() {
 
       if (error) throw error;
 
-      toast.success("Conta criada! Verifique seu e-mail para confirmar.");
+      toast.success("Conta criada! Verifique seu e-mail para confirmar.", { duration: 1500 });
       router.push("/login");
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error(error.message);
+        toast.error(error.message, { duration: 2000 });
       } else {
-        toast.error("Erro ao criar conta.");
+        toast.error("Erro ao criar conta.", { duration: 2000 });
       }
     } finally {
       setLoading(false);

@@ -22,15 +22,17 @@ export function CategoryCreateForm() {
 
       formRef.current?.reset();
 
-      toast.success("Categoria criada com sucesso!", { id: toastId });
+      toast.success("Categoria criada com sucesso!", { id: toastId, duration: 1500 });
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error(error.message, {
           id: toastId,
+          duration: 2000
         });
       } else {
         toast.error("Erro ao criar categoria.", {
           id: toastId,
+          duration: 2000
         });
       }
     } finally {
