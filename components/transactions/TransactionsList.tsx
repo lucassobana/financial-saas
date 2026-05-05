@@ -130,7 +130,7 @@ export function TransactionList({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-slate-400 hover:text-[#006a3e] hover:bg-green-50 rounded-full h-8 w-8 transition-colors shrink-0"
+                  className="text-slate-400 hover:text-green-600 bg-green-100 hover:bg-green-200 rounded-full h-8 w-8 transition-all duration-200 active:-translate-y-1.5 active:scale-125 shrink-0"
                   onClick={() => onEdit(t)}
                 >
                   <Edit2 size={14} />
@@ -140,7 +140,7 @@ export function TransactionList({
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full h-8 w-8 transition-colors shrink-0"
+                className="text-slate-400 hover:text-red-600 bg-red-100 hover:bg-red-200 rounded-full h-8 w-8 transition-all duration-200 active:-translate-y-1.5 active:scale-125 shrink-0"
                 onClick={() => handleDelete(t.id)}
               >
                 <Trash2 size={14} />
