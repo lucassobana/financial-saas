@@ -8,6 +8,7 @@ import {
   Tag,
   AlignLeft,
   CheckCircle,
+  Loader2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createTransaction } from "@/app/actions/transactions";
+import {
+  createTransaction,
+  updateTransaction,
+} from "@/app/actions/transactions";
 import { toast } from "sonner";
 
 export interface Category {
@@ -30,21 +34,39 @@ export interface Category {
   color: string;
 }
 
+export interface Transaction {
+  id: string;
+  amount: number;
+  description: string;
+  date: string;
+  type: "INCOME" | "EXPENSE";
+  category_id?: string | null;
+}
+
 type TransactionFormProps = {
   onSuccess?: () => void;
   onCancel?: () => void;
   categories: Category[];
+  initialData?: Transaction | null;
 };
 
 export function TransactionForm({
   onSuccess,
   onCancel,
   categories = [],
+  initialData,
 }: TransactionFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
-  const [type, setType] = useState<"INCOME" | "EXPENSE">("EXPENSE");
+  const isEditing = !!initialData;
 
-  const [categoryId, setCategoryId] = useState<string>("");
+  const [type, setType] = useState<"INCOME" | "EXPENSE">(
+    initialData?.type || "EXPENSE",
+  );
+  const [categoryId, setCategoryId] = useState<string>(
+    initialData?.category_id || "",
+  );
+  const [loading, setLoading] = useState(false);
+
   const selectedCategory = categories.find((c) => String(c.id) === categoryId);
 
   const handleSubmit = async (formData: FormData) => {
@@ -53,21 +75,44 @@ export function TransactionForm({
       return;
     }
 
-    formData.append("type", type);
-    if (categoryId) {
-      formData.append("category_id", categoryId);
-    }
-    const result = await createTransaction(formData);
+    setLoading(true);
+    const toastId = toast.loading(
+      isEditing ? "Atualizando transação..." : "Guardando transação...",
+    );
 
-    if (result && !result.error) {
-      formRef.current?.reset();
+    try {
+      formData.append("type", type);
+      if (categoryId) {
+        formData.append("category_id", categoryId);
+      }
 
-      setCategoryId("");
+      let result;
+      if (isEditing && initialData) {
+        result = await updateTransaction(initialData.id, formData);
+      } else {
+        result = await createTransaction(formData);
+      }
 
-      toast.success("Transação salva com sucesso!");
-      onSuccess?.();
-    } else {
-      toast.error("Erro ao salvar. Verifique o console.");
+      if (result && !result.error) {
+        formRef.current?.reset();
+        if (!isEditing) setCategoryId("");
+
+        toast.success(
+          isEditing ? "Transação atualizada!" : "Transação salva com sucesso!",
+          { id: toastId },
+        );
+        onSuccess?.();
+      } else {
+        toast.error("Erro ao salvar. Verifique o console.", { id: toastId });
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message, { id: toastId });
+      } else {
+        toast.error("Erro inesperado ao salvar.", { id: toastId });
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -114,8 +159,9 @@ export function TransactionForm({
               type="number"
               step="0.01"
               placeholder="0,00"
+              defaultValue={initialData?.amount}
               required
-              autoFocus
+              autoFocus={!isEditing}
               className="border-none shadow-none p-0 text-2xl font-bold text-slate-800 focus-visible:ring-0 placeholder:text-slate-200 w-full max-w-70 text-center h-auto"
             />
           </div>
@@ -132,7 +178,9 @@ export function TransactionForm({
               name="date"
               type="date"
               required
-              defaultValue={new Date().toISOString().split("T")[0]}
+              defaultValue={
+                initialData?.date || new Date().toISOString().split("T")[0]
+              }
               className="h-10 bg-slate-50 border-slate-200 rounded-xl px-4 focus-visible:ring-emerald-500 text-slate-700"
             />
           </div>
@@ -140,7 +188,12 @@ export function TransactionForm({
           <div className="space-y-3">
             <Label className="font-semibold text-sm text-slate-600 flex items-center gap-2">
               <Tag size={18} />
-              Categoria {type === "INCOME" && <span className="text-xs font-normal text-slate-400">(Opcional)</span>}
+              Categoria{" "}
+              {type === "INCOME" && (
+                <span className="text-xs font-normal text-slate-400">
+                  (Opcional)
+                </span>
+              )}
             </Label>
 
             <Select
@@ -192,6 +245,7 @@ export function TransactionForm({
               name="description"
               rows={3}
               required
+              defaultValue={initialData?.description}
               placeholder="Ex: Conta da luz, Supermercado, etc."
               className="bg-slate-50 border-slate-200 rounded-xl px-4 focus-visible:ring-emerald-500 text-slate-700 resize-none"
             />
@@ -201,14 +255,27 @@ export function TransactionForm({
         <div className="pt-2 space-y-3">
           <Button
             type="submit"
-            className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-sm text-lg"
+            disabled={loading}
+            className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-sm text-lg transition-all"
           >
-            <CheckCircle className="mr-2 h-5 w-5" />
-            Guardar
+            {loading ? (
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+            ) : (
+              <CheckCircle className="mr-2 h-5 w-5" />
+            )}
+            {loading
+              ? isEditing
+                ? "Atualizando..."
+                : "Guardando..."
+              : isEditing
+                ? "Atualizar"
+                : "Guardar"}
           </Button>
+
           <Button
             type="button"
             variant="ghost"
+            disabled={loading}
             className="w-full h-10 text-slate-500 font-semibold hover:bg-slate-100 rounded-xl"
             onClick={() => onCancel?.()}
           >

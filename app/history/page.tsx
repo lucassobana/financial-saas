@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { TransactionList } from "@/components/transactions/TransactionsList";
+import { TransactionManager } from "@/components/transactions/TransactionManager";
 import { MonthFilter } from "@/components/dashboard/MonthFilter";
 
 export default async function HistoryPage({
@@ -25,6 +25,8 @@ export default async function HistoryPage({
 
   const { data: transactions } = await query;
 
+  const { data: categories } = await supabase.from("categories").select("*");
+
   return (
     <div className="bg-slate-50 min-h-screen pb-32 pt-6 px-4">
       <div className="flex justify-between items-center mb-8">
@@ -41,7 +43,10 @@ export default async function HistoryPage({
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden p-2">
         {transactions && transactions.length > 0 ? (
-          <TransactionList transactions={transactions} />
+          <TransactionManager
+            transactions={transactions}
+            categories={categories || []}
+          />
         ) : (
           <div className="p-12 text-center text-slate-400">
             Nenhuma transação encontrada para este período.

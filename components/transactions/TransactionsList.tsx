@@ -2,34 +2,41 @@
 
 import { deleteTransaction } from "@/app/actions/transactions";
 import { Button } from "@/components/ui/button";
-import { ArrowDownCircle, ArrowUpCircle, Trash2 } from "lucide-react";
+import { ArrowDownCircle, ArrowUpCircle, Trash2, Edit2 } from "lucide-react";
 import { toast } from "sonner";
 
-interface Transaction {
+export interface Transaction {
   id: string;
   description: string;
   amount: number;
   date: string;
   type: "INCOME" | "EXPENSE";
+  category_id?: string | null; 
   categories: { name: string; color: string } | null;
 }
 
 export function TransactionList({
   transactions,
+  onEdit,
 }: {
   transactions: Transaction[];
+  onEdit?: (transaction: Transaction) => void; 
 }) {
+  
   const handleDelete = (id: string) => {
     toast("Tem certeza que deseja deletar esta transação?", {
       action: {
         label: "Deletar",
         onClick: async () => {
-          const result = await deleteTransaction(id);
-
-          if (result?.error) {
-            toast.error("Erro ao deletar: " + result.error);
-          } else {
-            toast.success("Transação deletada com sucesso");
+          try {
+            await deleteTransaction(id);
+            toast.success("Transação deletada com sucesso!");
+          } catch (error: unknown) {
+            if (error instanceof Error) {
+              toast.error("Erro ao deletar: " + error.message);
+            } else {
+              toast.error("Erro ao deletar transação.");
+            }
           }
         },
       },
@@ -55,7 +62,7 @@ export function TransactionList({
       {transactions.map((t) => (
         <div
           key={t.id}
-          className="flex items-center justify-between border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors"
+          className="flex items-center justify-between border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors py-2"
         >
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-4">
@@ -84,12 +91,24 @@ export function TransactionList({
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <span
-              className={`font-bold ${t.type == "INCOME" ? "text-emerald-600 bg-emerald-200" : "text-red-600 bg-red-200"} px-3 py-1 rounded-full`}
+              className={`font-bold ${t.type == "INCOME" ? "text-emerald-600 bg-emerald-200" : "text-red-600 bg-red-200"} px-3 py-1 rounded-full whitespace-nowrap`}
             >
               {t.type === "INCOME" ? "+" : "-"} R$ {Number(t.amount).toFixed(2)}
             </span>
+            
+            {onEdit && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-slate-400 hover:text-[#006a3e] hover:bg-green-50 rounded-full h-8 w-8 transition-colors"
+                onClick={() => onEdit(t)}
+              >
+                <Edit2 size={18} />
+              </Button>
+            )}
+
             <Button
               variant="ghost"
               size="icon"
