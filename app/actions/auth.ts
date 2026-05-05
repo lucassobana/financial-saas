@@ -17,3 +17,20 @@ export async function signOut() {
   revalidatePath('/', 'layout')
   redirect('/login')
 }
+
+export async function updateProfile(formData: FormData) {
+  const supabase = await createClient();
+  const fullName = formData.get("full_name") as string;
+
+  const { error } = await supabase.auth.updateUser({
+    data: { full_name: fullName },
+  });
+
+  if (error) {
+    console.error("Erro ao atualizar perfil:", error.message);
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/settings");
+  return { success: true };
+}

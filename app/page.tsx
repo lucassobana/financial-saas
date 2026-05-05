@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { TransactionList } from "@/components/transactions/TransactionsList";
+import { TransactionManager } from "@/components/transactions/TransactionManager"; 
 import { SpendingDonut } from "@/components/charts/SpendingDonut";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,6 +7,7 @@ import { Wallet, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import { MonthFilter } from "@/components/dashboard/MonthFilter";
 import Link from "next/link";
 import { NewTransactionModal } from "@/components/transactions/NewTransactionModal";
+import { redirect } from "next/navigation";
 
 export default async function Home({
   searchParams,
@@ -30,6 +31,7 @@ export default async function Home({
   }
 
   const { data: transactions } = await query;
+  
   const { data: categories } = await supabase
     .from("categories")
     .select("*")
@@ -45,8 +47,19 @@ export default async function Home({
       .reduce((acc, curr) => acc + curr.amount, 0) || 0;
   const balance = incomes - expenses;
 
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    redirect("/login");
+  }
+
+  const userName = user.user_metadata?.full_name || "";
+
   return (
-    <div className="bg-slate-50 min-h-screen pb-32 font-sans">
+    <div className="min-h-screen pb-32 font-sans">
       <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-white border-b border-slate-200 shadow-sm">
         <div className="flex items-center gap-2">
           <div className="w-12 h-12 flex justify-center items-center gap-2 bg-[#006a3e] rounded-xl">
@@ -60,6 +73,9 @@ export default async function Home({
       </header>
 
       <main className="mt-24 px-4 max-w-5xl mx-auto space-y-6">
+        <p className="text-slate-500 text-lg font-light">
+          Bem-vindo, <span className="text-emerald-700 font-bold">{userName}</span>
+        </p>
         <section className="grid grid-cols-1 md:grid-cols-12 gap-4">
           <Card className="md:col-span-8 bg-emerald-700 text-white overflow-hidden relative border-none shadow-md">
             <CardContent className="p-8 relative z-10">
@@ -131,7 +147,12 @@ export default async function Home({
                 <Link href="/history">Ver tudo</Link>
               </Button>
             </div>
-            <TransactionList transactions={transactions?.slice(0, 5) || []} />
+            
+            <TransactionManager 
+              transactions={transactions?.slice(0, 5) || []} 
+              categories={categories || []}
+            />
+            
           </div>
         </section>
       </main>

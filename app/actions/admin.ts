@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js' 
 import { revalidatePath } from 'next/cache'
 
 export async function adminCreateUser(formData: FormData) {
@@ -10,16 +10,27 @@ export async function adminCreateUser(formData: FormData) {
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    }
   )
 
   const { error } = await supabaseAdmin.auth.admin.createUser({
     email,
     password,
-    email_confirm: true
+    email_confirm: true,
+    user_metadata: { 
+        full_name: formData.get('full_name') || '' 
+    }
   })
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('Erro ao criar usuário:', error.message)
+    throw new Error(error.message)
+  }
 
   revalidatePath('/admin/create-user')
   return { success: true }

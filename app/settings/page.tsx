@@ -20,7 +20,7 @@ export default function SettingsPage() {
     {
       name: "Perfil",
       description: "Edite suas informações pessoais",
-      href: "/profile",
+      href: "/settings/profile",
       icon: User,
     },
     {
