@@ -88,6 +88,11 @@ export function TransactionForm({
         formData.append("category_id", categoryId);
       }
 
+      const rawAmount = formData.get("amount") as string;
+      if (rawAmount) {
+        formData.set("amount", rawAmount.replace(",", "."));
+      }
+
       let result;
       if (isEditing && initialData) {
         result = await updateTransaction(initialData.id, formData);
@@ -186,10 +191,8 @@ export function TransactionForm({
               name="amount"
               type="text"
               inputMode="decimal"
-              pattern="[0-9]*"
-              step="0.01"
               placeholder="0,00"
-              defaultValue={initialData?.amount}
+              defaultValue={initialData?.amount?.toString().replace(".", ",")}
               required
               autoFocus={!isEditing}
               className="border-none shadow-none p-0 text-2xl font-bold text-slate-800 focus-visible:ring-0 placeholder:text-slate-200 w-full max-w-70 text-center h-auto"
